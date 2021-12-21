@@ -121,6 +121,7 @@ namespace WindowsFormsApp1
             InformUser_Videos("Audio download added to queue: " + Title);
         }
 
+        //Channel
         private async void Button4_Click(object sender, EventArgs e)
         {
             if (textBox3.Text == "")
@@ -162,9 +163,6 @@ namespace WindowsFormsApp1
             int i = 0; 
             foreach (var item in ChannelItems)
             {
-                //todo
-                if (i > 10) break;
-
                 if (i%10 == 0)
                     InformUser_Channels("Rendering channel content. Progress: " + i + "/" + ChannelItems.Count);
 
