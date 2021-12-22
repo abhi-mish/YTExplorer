@@ -50,7 +50,7 @@ namespace WindowsFormsApp1
             DownloadQRefreshTimer.Enabled = false;
             fChannel_DisplayThumbs = checkBox1.Checked;
             //ChannelSortCommon(); 
-            fTestMode = true;
+            fTestMode = false;
             InformUser_Videos("Download Path defaults to:" + DownloadPath);
         }
 
