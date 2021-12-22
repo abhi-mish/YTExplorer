@@ -20,6 +20,8 @@ using System.Net;
  * document testcases
  * consider making channel content rendering non-blocking. timer-based progress?
  * on channel view - investigate why labels are indented in sometimes
+ * audio download same size as video - extracting the wrong stream
+ * playlist support - ditto to channel?
  */
 
 namespace WindowsFormsApp1
@@ -132,8 +134,10 @@ namespace WindowsFormsApp1
                     InformUser_Channels("Enter a channel URL");
                     return;
                 }
-                InformUser_Channels("Getting Channel Info.");
             }
+
+            button4.Enabled = false;
+            InformUser_Channels("Getting Channel Info.");
 
             // Items - todo: consider user-configurable input for channels w/ greater than 200 items. Hardcoded for now
             int chitems = 200;
@@ -219,6 +223,7 @@ namespace WindowsFormsApp1
             tableLayoutPanel1.AutoScroll = true;
             tableLayoutPanel1.ResumeLayout();
             tableLayoutPanel1.Visible = true;
+            button4.Enabled = true;
         }
 
         private void Channel_VideoButton_Click(object sender, EventArgs e)
