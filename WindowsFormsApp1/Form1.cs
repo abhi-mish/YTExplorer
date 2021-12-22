@@ -20,8 +20,8 @@ using System.Net;
  * document testcases
  * consider making channel content rendering non-blocking. timer-based progress?
  * on channel view - investigate why labels are indented in sometimes
- * audio download same size as video - extracting the wrong stream
  * playlist support - ditto to channel?
+ * speed up download on large files - parallelize chunks?
  */
 
 namespace WindowsFormsApp1
@@ -50,7 +50,7 @@ namespace WindowsFormsApp1
             DownloadQRefreshTimer.Enabled = false;
             fChannel_DisplayThumbs = checkBox1.Checked;
             //ChannelSortCommon(); 
-            fTestMode = false;
+            fTestMode = true;
             InformUser_Videos("Download Path defaults to:" + DownloadPath);
         }
 
@@ -282,10 +282,11 @@ namespace WindowsFormsApp1
             * We'll work with them in the video and audio download examples.
             */
             IEnumerable<VideoInfo> videoInfos = DownloadUrlResolver.GetDownloadUrls(url);
+            VideoInfo video;
 
-            // Select the first .mp4 video with 720p resolution
+            // Select the first .mp4 video with 720p resolution. 0p for audio
             // todo - only 360p working currently. check why 720p isn't. ideally, download the highest quality res by default
-            VideoInfo video = videoInfos.First(info => info.VideoType == VideoType.Mp4 && info.Resolution == 360);
+            video = videoInfos.First(info => info.VideoType == VideoType.Mp4 && info.Resolution == (fVideo?360:0));
 
             // Decrypt only if needed
             if (video.RequiresDecryption)
