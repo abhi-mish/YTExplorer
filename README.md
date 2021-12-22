@@ -1,5 +1,7 @@
-# YTExplorer
-WinForms shell to exercise the capabilities exposed by the snakx/YouTubeApiSharp lib
+# YTUtils
+Utility to explore a Youtube channel or playlist and download as audio/video.
+
+This is a WinForms shell that exercises the capabilities exposed by the snakx/YouTubeApiSharp lib (https://github.com/snakx/YouTubeApiSharp).
 
 v1: Explore a channel and download as audio/video.
 
