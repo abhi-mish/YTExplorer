@@ -28,6 +28,7 @@ namespace WindowsFormsApp1
         internal string Folder;
         public int Progress = 0;
         public bool Complete = false;
+        public bool AlreadyExists = false;
         public static string makeFilenameValid(string file)
         {
             char replacementChar = '_';
@@ -54,14 +55,6 @@ namespace WindowsFormsApp1
         /// <param name="file_extension"></param>
         public void DownloadFile(string URL, string Title, bool isVideo, string Folder, string file_extension)
         {
-            WebClient DownloadFile = new WebClient();
-
-            DownloadFile.DownloadProgressChanged += (sender, e) => DownloadFileProgressChanged(sender, e, DownloadFile);
-
-            // Event when download completed
-            DownloadFile.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadFileCompleted);
-
-            // Start download
             this.Folder = Folder;
             var directory = Folder;
 
@@ -91,7 +84,21 @@ namespace WindowsFormsApp1
                     .Replace("!", "") + ".m4a");
             }
 
-            DownloadFile.DownloadFileAsync(new Uri(URL), file, file + "|" + Title);
+            // Check if file already exists
+            this.AlreadyExists = false;
+            if (!System.IO.File.Exists(file))
+            {
+                WebClient DownloadFile = new WebClient();
+
+                DownloadFile.DownloadProgressChanged += (sender, e) => DownloadFileProgressChanged(sender, e, DownloadFile);
+
+                // Event when download completed
+                DownloadFile.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadFileCompleted);
+
+                // Start download
+                DownloadFile.DownloadFileAsync(new Uri(URL), file, file + "|" + Title);
+            }
+            else this.AlreadyExists = true;
         }
 
         /// <summary>

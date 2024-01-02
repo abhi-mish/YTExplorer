@@ -39,8 +39,14 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage_Channel = new System.Windows.Forms.TabPage();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button_DLAllVideo = new System.Windows.Forms.Button();
+            this.button_DLAllAudio = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.radioButton_playlist = new System.Windows.Forms.RadioButton();
+            this.radioButton_channel = new System.Windows.Forms.RadioButton();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.checkBox_Asc = new System.Windows.Forms.CheckBox();
@@ -53,6 +59,8 @@
             this.tabControl1.SuspendLayout();
             this.tabPage_Video.SuspendLayout();
             this.tabPage_Channel.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -84,7 +92,7 @@
             this.tabPage_Video.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage_Video.Size = new System.Drawing.Size(800, 1013);
             this.tabPage_Video.TabIndex = 0;
-            this.tabPage_Video.Text = "VideoView";
+            this.tabPage_Video.Text = "Single Item";
             this.tabPage_Video.UseVisualStyleBackColor = true;
             // 
             // label3
@@ -167,8 +175,10 @@
             // 
             // tabPage_Channel
             // 
-            this.tabPage_Channel.Controls.Add(this.tableLayoutPanel1);
             this.tabPage_Channel.Controls.Add(this.checkBox1);
+            this.tabPage_Channel.Controls.Add(this.groupBox3);
+            this.tabPage_Channel.Controls.Add(this.groupBox2);
+            this.tabPage_Channel.Controls.Add(this.tableLayoutPanel1);
             this.tabPage_Channel.Controls.Add(this.textBox4);
             this.tabPage_Channel.Controls.Add(this.groupBox1);
             this.tabPage_Channel.Controls.Add(this.button4);
@@ -179,8 +189,85 @@
             this.tabPage_Channel.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage_Channel.Size = new System.Drawing.Size(800, 1013);
             this.tabPage_Channel.TabIndex = 1;
-            this.tabPage_Channel.Text = "ChannelView";
+            this.tabPage_Channel.Text = "Channel/Playlist";
             this.tabPage_Channel.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(114, 70);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(129, 24);
+            this.checkBox1.TabIndex = 10;
+            this.checkBox1.Text = "ShowPreview";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged_1);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.button_DLAllVideo);
+            this.groupBox3.Controls.Add(this.button_DLAllAudio);
+            this.groupBox3.Location = new System.Drawing.Point(665, 8);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(123, 99);
+            this.groupBox3.TabIndex = 13;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "DownloadAll";
+            // 
+            // button_DLAllVideo
+            // 
+            this.button_DLAllVideo.Location = new System.Drawing.Point(11, 59);
+            this.button_DLAllVideo.Name = "button_DLAllVideo";
+            this.button_DLAllVideo.Size = new System.Drawing.Size(90, 34);
+            this.button_DLAllVideo.TabIndex = 15;
+            this.button_DLAllVideo.Text = "Video";
+            this.button_DLAllVideo.UseVisualStyleBackColor = true;
+            this.button_DLAllVideo.Click += new System.EventHandler(this.button_DLAllVideo_Click);
+            // 
+            // button_DLAllAudio
+            // 
+            this.button_DLAllAudio.Location = new System.Drawing.Point(11, 25);
+            this.button_DLAllAudio.Name = "button_DLAllAudio";
+            this.button_DLAllAudio.Size = new System.Drawing.Size(90, 34);
+            this.button_DLAllAudio.TabIndex = 14;
+            this.button_DLAllAudio.Text = "Audio";
+            this.button_DLAllAudio.UseVisualStyleBackColor = true;
+            this.button_DLAllAudio.Click += new System.EventHandler(this.button_DLAllAudio_Click);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.radioButton_playlist);
+            this.groupBox2.Controls.Add(this.radioButton_channel);
+            this.groupBox2.Location = new System.Drawing.Point(560, 8);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(97, 99);
+            this.groupBox2.TabIndex = 12;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Mode";
+            // 
+            // radioButton_playlist
+            // 
+            this.radioButton_playlist.AutoSize = true;
+            this.radioButton_playlist.Checked = true;
+            this.radioButton_playlist.Location = new System.Drawing.Point(6, 55);
+            this.radioButton_playlist.Name = "radioButton_playlist";
+            this.radioButton_playlist.Size = new System.Drawing.Size(82, 24);
+            this.radioButton_playlist.TabIndex = 11;
+            this.radioButton_playlist.TabStop = true;
+            this.radioButton_playlist.Text = "Playlist";
+            this.radioButton_playlist.UseVisualStyleBackColor = true;
+            // 
+            // radioButton_channel
+            // 
+            this.radioButton_channel.AutoSize = true;
+            this.radioButton_channel.Location = new System.Drawing.Point(6, 25);
+            this.radioButton_channel.Name = "radioButton_channel";
+            this.radioButton_channel.Size = new System.Drawing.Size(93, 24);
+            this.radioButton_channel.TabIndex = 10;
+            this.radioButton_channel.Text = "Channel";
+            this.radioButton_channel.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel1
             // 
@@ -202,19 +289,6 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(797, 778);
             this.tableLayoutPanel1.TabIndex = 11;
             // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(129, 70);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(167, 24);
-            this.checkBox1.TabIndex = 10;
-            this.checkBox1.Text = "DisplayThumbnails";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged_1);
-            // 
             // textBox4
             // 
             this.textBox4.Location = new System.Drawing.Point(18, 122);
@@ -230,7 +304,7 @@
             this.groupBox1.Controls.Add(this.checkBox_Asc);
             this.groupBox1.Controls.Add(this.radioButton_Date);
             this.groupBox1.Controls.Add(this.radioButton_Size);
-            this.groupBox1.Location = new System.Drawing.Point(311, 52);
+            this.groupBox1.Location = new System.Drawing.Point(237, 52);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(313, 54);
             this.groupBox1.TabIndex = 6;
@@ -280,27 +354,27 @@
             // 
             this.button4.Location = new System.Drawing.Point(18, 64);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(105, 34);
+            this.button4.Size = new System.Drawing.Size(90, 34);
             this.button4.TabIndex = 4;
-            this.button4.Text = "GetVideos";
+            this.button4.Text = "GetItems";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.Button4_Click);
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(129, 20);
+            this.textBox3.Location = new System.Drawing.Point(63, 20);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(645, 26);
+            this.textBox3.Size = new System.Drawing.Size(487, 26);
             this.textBox3.TabIndex = 3;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(14, 20);
+            this.label2.Location = new System.Drawing.Point(14, 26);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(109, 20);
+            this.label2.Size = new System.Drawing.Size(46, 20);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Channel URL:";
+            this.label2.Text = "URL:";
             // 
             // Form1
             // 
@@ -315,6 +389,9 @@
             this.tabPage_Video.PerformLayout();
             this.tabPage_Channel.ResumeLayout(false);
             this.tabPage_Channel.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -345,6 +422,12 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.RadioButton radioButton_playlist;
+        private System.Windows.Forms.RadioButton radioButton_channel;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button button_DLAllVideo;
+        private System.Windows.Forms.Button button_DLAllAudio;
     }
 }
 

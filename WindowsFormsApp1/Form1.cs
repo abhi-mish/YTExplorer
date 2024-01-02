@@ -19,7 +19,7 @@ using System.Net;
  * support for channels w/ >200 items
  * document testcases
  * consider making channel content rendering non-blocking. timer-based progress?
- * on channel view - investigate why labels are indented in sometimes
+ * on channel view - investigate why labels are indented inwards sometimes
  * playlist support - ditto to channel?
  * speed up download on large files - parallelize chunks?
  */
@@ -44,7 +44,7 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
-            DownloadPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\YTE";
+            DownloadPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\YTU";
             Downloads = new List<DownloadQObject>();
             DownloadQRefreshTimer = new System.Windows.Forms.Timer();
             DownloadQRefreshTimer.Enabled = false;
@@ -97,7 +97,9 @@ namespace WindowsFormsApp1
 
             string Title = AddToDownloadQueue(textBox1.Text, true);
 
-            InformUser_Videos("Video download added to queue: " + Title);
+            if (Title == "ALREADYEXISTS")
+                InformUser_Videos("That item already exists at the specified location.");
+            else InformUser_Videos("Video download added to queue: " + Title);
         }
 
         //Download audio
@@ -120,41 +122,70 @@ namespace WindowsFormsApp1
 
             string Title = AddToDownloadQueue(textBox1.Text, false);
 
-            InformUser_Videos("Audio download added to queue: " + Title);
+            if (Title == "ALREADYEXISTS")
+                InformUser_Videos("That item already exists at the specified location.");
+            else InformUser_Videos("Audio download added to queue: " + Title);
         }
 
-        //Channel
-        private async void Button4_Click(object sender, EventArgs e)
+        bool ChannelPlaylistCommonStart()
         {
+            bool fPlaylistMode = radioButton_playlist.Checked; // else channel mode
+
             if (textBox3.Text == "")
             {
-                if (fTestMode) textBox3.Text = "https://www.youtube.com/channel/UCG2CL6EUjG8TVT1Tpl9nJdg";
-                else
+                if (fTestMode)
                 {
-                    InformUser_Channels("Enter a channel URL");
-                    return;
+                    if (fPlaylistMode)
+                        textBox3.Text = "https://www.youtube.com/watch?v=oOUGLKf8uU0&list=PLRQ6FzYGa8ru8eSdpiSvKDFy7FpRcpa2A&pp=iAQB";
+                    //"https://www.youtube.com/watch?v=d08rlbrUOco&list=PLXpRJ1wzKbm5Me8WTtEhYCSew6uAb2NdX";
+                    else textBox3.Text = "https://www.youtube.com/@amphone-wc2pt";
+                    //"https://www.youtube.com/@itsvictoriaytfrazier1906/";
+
+                    InformUser_Channels("Getting details for " + (fPlaylistMode ? "playlist" : "channel"));
                 }
+                else
+                    InformUser_Channels("Enter a URL");
             }
 
             button4.Enabled = false;
-            InformUser_Channels("Getting Channel Info.");
+
+            return fPlaylistMode;
+        }
+
+        void ChannelPlaylistCommonEnd()
+        {
+            button4.Enabled = true;
+        }
+
+        //Channel/Playlist
+        private async void Button4_Click(object sender, EventArgs e)
+        {
+            bool fPlaylistMode = ChannelPlaylistCommonStart();
+            if (textBox3.Text == "")
+            {
+                ChannelPlaylistCommonEnd();
+                return;
+            }
 
             // Items - todo: consider user-configurable input for channels w/ greater than 200 items. Hardcoded for now
-            int chitems = 200;
-            ChannelItemsSearch channelItems = new ChannelItemsSearch();
-            var ChannelItems = await channelItems.GetChannelItems(textBox3.Text, chitems);
+            int citems = 50;
 
-            PictureBox[] Pic = new PictureBox[ChannelItems.Count];
-            Label[] L = new Label[ChannelItems.Count];
-            System.Windows.Forms.Button[] Video = new System.Windows.Forms.Button[ChannelItems.Count];
-            System.Windows.Forms.Button[] Audio = new System.Windows.Forms.Button[ChannelItems.Count];
+            PlaylistItemsSearch playlistItems = new PlaylistItemsSearch();
+            ChannelItemsSearch channelItems = new ChannelItemsSearch();
+
+            var Items = (fPlaylistMode ? (await playlistItems.GetPlaylistItems(textBox3.Text, citems)) : (await channelItems.GetChannelItems(textBox3.Text, citems)));
+
+            PictureBox[] Pic = new PictureBox[Items.Count];
+            Label[] L = new Label[Items.Count];
+            System.Windows.Forms.Button[] Video = new System.Windows.Forms.Button[Items.Count];
+            System.Windows.Forms.Button[] Audio = new System.Windows.Forms.Button[Items.Count];
 
             tableLayoutPanel1.Visible = false;
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel1.Controls.Clear();
             tableLayoutPanel1.ColumnStyles.Clear();
             tableLayoutPanel1.RowStyles.Clear();
-            tableLayoutPanel1.RowCount = ChannelItems.Count;
+            tableLayoutPanel1.RowCount = Items.Count;
 
             if (fChannel_DisplayThumbs)
                 tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
@@ -165,10 +196,10 @@ namespace WindowsFormsApp1
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
 
             int i = 0; 
-            foreach (var item in ChannelItems)
+            foreach (var item in Items)
             {
                 if (i%10 == 0)
-                    InformUser_Channels("Rendering channel content. Progress: " + i + "/" + ChannelItems.Count);
+                    InformUser_Channels("Rendering channel/playlist content. Progress: " + i + "/" + Items.Count);
 
                 L[i] = new Label();
                 Video[i] = new System.Windows.Forms.Button();
@@ -219,11 +250,15 @@ namespace WindowsFormsApp1
 
                 i++;
             }
-
+            InformUser_Channels("Rendering complete");
+            
             tableLayoutPanel1.AutoScroll = true;
             tableLayoutPanel1.ResumeLayout();
             tableLayoutPanel1.Visible = true;
-            button4.Enabled = true;
+
+            Items.Clear();
+
+            ChannelPlaylistCommonEnd();
         }
 
         private void Channel_VideoButton_Click(object sender, EventArgs e)
@@ -234,7 +269,10 @@ namespace WindowsFormsApp1
             string url = (string)(B.Tag); 
 
             string Title = AddToDownloadQueue(url, true);
-            InformUser_Channels("Video download added to queue: " + Title);
+
+            if (Title == "ALREADYEXISTS")
+                InformUser_Channels("That item already exists at the specified location.");
+            else InformUser_Channels("Video download added to queue: " + Title);
         }
 
         private void Channel_AudioButton_Click(object sender, EventArgs e)
@@ -245,7 +283,10 @@ namespace WindowsFormsApp1
             string url = (string)(B.Tag);
 
             string Title = AddToDownloadQueue(url, false);
-            InformUser_Channels("Audio download added to queue: " + Title);
+
+            if (Title == "ALREADYEXISTS")
+                InformUser_Channels("That item already exists at the specified location.");
+            else InformUser_Channels("Audio download added to queue: " + Title);
         }
 
         private void RadioButton1_CheckedChanged(object sender, EventArgs e)
@@ -302,6 +343,9 @@ namespace WindowsFormsApp1
             Downloads.Add(DQO);
 
             Task.Run(() => DQO.D.DownloadFile(video.DownloadUrl, video.Title, fVideo, DownloadPath, video.VideoExtension));
+
+            if (DQO.D.AlreadyExists) return "ALREADYEXISTS";
+            //TODO this doesn't work yet - need to add synchronization. 
 
             //VISUALS below
             label3.Visible = true;
@@ -366,6 +410,49 @@ namespace WindowsFormsApp1
         private void CheckBox1_CheckedChanged_1(object sender, EventArgs e)
         {
             fChannel_DisplayThumbs = checkBox1.Checked;
+        }
+
+        private async void DownloadAllCommon(bool fVideo)
+        {
+            bool fPlaylistMode = ChannelPlaylistCommonStart();
+
+            if (textBox3.Text == "")
+            {
+                ChannelPlaylistCommonEnd();
+                return;
+            }
+
+            // Items - todo: consider user-configurable input for channels w/ greater than 200 items. Hardcoded for now
+            int citems = 50;
+
+            PlaylistItemsSearch playlistItems = new PlaylistItemsSearch();
+            ChannelItemsSearch channelItems = new ChannelItemsSearch();
+
+            var Items = (fPlaylistMode ? (await playlistItems.GetPlaylistItems(textBox3.Text, citems)) : (await channelItems.GetChannelItems(textBox3.Text, citems)));
+
+            int i = 1;
+
+            foreach (var item in Items)
+            {
+                string Title = AddToDownloadQueue(item.getUrl(), fVideo);
+
+                if (Title == "ALREADYEXISTS")
+                    InformUser_Channels("That item already exists at the specified location.");
+                else InformUser_Channels((fVideo ? "Video" : "Audio") + " download added to queue (" + i + "/" + Items.Count + "): " + Title);
+
+                i++;
+            }
+
+            ChannelPlaylistCommonEnd();
+        }
+
+        private void button_DLAllAudio_Click(object sender, EventArgs e)
+        {
+            DownloadAllCommon(false);
+        }
+        private void button_DLAllVideo_Click(object sender, EventArgs e)
+        {
+            DownloadAllCommon(true);
         }
     }
 
